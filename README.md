@@ -40,7 +40,9 @@ yo lar-ang-boot
 Yeoman will ask you a few questions and will take care of setting up the project.
 All you need to do is add an alias to your webserver:
 
+```
 /var/www/.../{projectname}/public -> http://example.com/{projectname}
+```
 
 ## Getting To Know Yeoman
 
