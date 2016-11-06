@@ -1,6 +1,6 @@
 # generator-lar-ang-boot
 
-[Yeoman](http://yeoman.io) generator
+[Yeoman](http://yeoman.io) generator for Linux servers
 
 
 ## Getting Started
