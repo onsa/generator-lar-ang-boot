@@ -48,7 +48,7 @@ module.exports = function (grunt) {
             scripts: {
             	src: ['<%= config.dest %>/js/main.min.js']
             },
-            style: {
+            styles: {
             	src: ['<%= config.dest %>/css/main.min.css']
             }
         },
@@ -108,21 +108,34 @@ module.exports = function (grunt) {
             php: '<%= config.dest %>/views/index.php'                       //  path where grunt-contrib-copy has copied template file - references within 
         },
         watch: {                                                            //  watch files for changes and run tasks
-            copy: {
-                files: [ '<%= config.src %>/*.html'],
-                tasks: ['main']
+            index: {
+                files: [ '<%= config.src %>/*.php'],
+                tasks: ['clean:index', 'copy:index']
             },
 			views: {
-                files: ['public-src/views/{,*/}*.html'],
-                tasks:['main']
+                files: ['<%= config.src %>/views/{,*/}*.html'],
+                tasks:['clean:views', 'copy:views']
 			},
             scripts: {                                                      //  sub-task name
-                files: ['public-src/js/{,*/}*.js'],                         //  files watched
-                tasks:['main']                        		                //  tasks to run
+                files: ['<%= config.src %>/js/{,*/}*.js'],                         //  files watched
+                tasks:['jshint',
+                       'jscs',
+                       'clean:scripts',
+                       'clean:styles',
+                       'useminPrepare',
+                       'concat',
+                       'uglify',
+                       'usemin']
             },
             styles: {
-                files: ['public-src/styles/*.scss', 'public-src/styles/*.css'],
-                tasks:['main']
+                files: ['<%= config.src %>/styles/*.scss'],
+                tasks:['clean:scripts',
+                       'clean:styles',
+                       'sass',
+                       'useminPrepare',
+                       'concat',
+                       'uglify',
+                       'usemin']
             }
         }
     });
