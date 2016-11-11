@@ -2,6 +2,14 @@
 var yeoman = require('yeoman-generator');
 var chalk = require('chalk');
 var yosay = require('yosay');
+var appName;
+
+var prepareAppName = function(rawAppName) {
+	rawAppName = rawAppName.replace(/(-.)/g, function(letter){return letter.toUpperCase()});
+	rawAppName = rawAppName.replace(/(&.)/g, function(letter){return letter.toUpperCase()});
+	rawAppName = rawAppName.replace(/(\s.)/g, function(letter){return letter.toUpperCase()});
+	return rawAppName.charAt(0).toUpperCase() + rawAppName.slice(1);
+};
 
 module.exports = yeoman.generators.Base.extend({
 	init: function () {
@@ -58,6 +66,8 @@ module.exports = yeoman.generators.Base.extend({
 			this.props = props;
 			// To access props later use this.props.someOption;
 			this.appName = this.props.name;
+			appName = prepareAppName(this.appName);
+			this.log(appName);
 			this.appDescription = this.props.description;
 			this.DBName = this.props.DBName;
 			this.DBPassword = this.props.DBPassword;
@@ -102,7 +112,7 @@ module.exports = yeoman.generators.Base.extend({
 			this.emit('permissions');
 		}.bind(this));
 
-		//  Set .env file
+		//  Set .env file.
 		this.on('environment', function() {
 			this.destinationRoot(this.baseDir+'/'+this.appName);
 			this.log(yosay('Setting ' + chalk.red('environmental') + ' variables.'));
@@ -175,19 +185,16 @@ module.exports = yeoman.generators.Base.extend({
 							}
 						);
 
-						//  Change authentication template.
-						this.log(yosay('Preparing ' + chalk.red('authentication') + ' template.'));
-						this.destinationRoot(this.baseDir+'/'+this.appName);
+						//  Set app name in config file.
+						this.destinationRoot(this.baseDir+'/'+this.appName+'/config');
+						this.log(yosay('Setting ' + chalk.red('config file') + '.'));
 						this.fs.copy(
-							this.destinationPath('/resources/views/layouts/app.blade.php'),
-							this.destinationPath('/public/views/layouts/app.blade.php'),
+							this.destinationPath('app.php'),
+							this.destinationPath('app.php'),
 							{
 								process: function(content) {
-								var regExCssPath = new RegExp('/css/app.css', 'g');
-								var regExJsPath = new RegExp('<script src="/js/app.js"></script>', 'g');
-								content = content.toString().replace(regExCssPath, '{{ url(\'/\') }}/styles/main.min.css');
-								content = content.toString().replace(regExJsPath, '');
-								return content;            
+									content = content.toString().replace("'Laravel'", "'"+appName+"'");
+									return content;
 								}
 							}
 						);
@@ -218,6 +225,23 @@ module.exports = yeoman.generators.Base.extend({
 								process: function(content) {
 								var regExCtrlIndex = new RegExp('home', 'g');
 								content = content.toString().replace(regExCtrlIndex, 'index');
+								return content;            
+								}
+							}
+						);
+
+						//  Change authentication template.
+						this.log(yosay('Preparing ' + chalk.red('authentication') + ' template.'));
+						this.destinationRoot(this.baseDir+'/'+this.appName);
+						this.fs.copy(
+							this.destinationPath('/resources/views/layouts/app.blade.php'),
+							this.destinationPath('/public/views/layouts/app.blade.php'),
+							{
+								process: function(content) {
+								var regExCssPath = new RegExp('/css/app.css', 'g');
+								var regExJsPath = new RegExp('<script src="/js/app.js"></script>', 'g');
+								content = content.toString().replace(regExCssPath, '{{ url(\'/\') }}/styles/main.min.css');
+								content = content.toString().replace(regExJsPath, '');
 								return content;            
 								}
 							}
@@ -283,7 +307,7 @@ module.exports = yeoman.generators.Base.extend({
 					this.fs.copyTpl(
 						this.templatePath('_index.php'),
 						this.destinationPath('public-src/index.php'),
-						{ AppName: this.appName.charAt(0).toUpperCase() + this.appName.slice(1),
+						{ AppName: appName,
 						  appName: this.appName,
 						  appRoute: this.route.path,
 						  routeView: this.route.viewDirective
