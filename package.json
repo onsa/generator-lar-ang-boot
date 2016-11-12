@@ -1,6 +1,6 @@
 {
   "name": "generator-lar-ang-boot",
-  "version": "0.0.3",
+  "version": "0.0.4",
   "description": "Laravel - AngularJS (angular-route or ui-router) - Bootstrap generator with Grunt and optional user authentication",
   "license": "MIT",
   "main": "generators/app/index.js",

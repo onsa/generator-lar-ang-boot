@@ -349,7 +349,6 @@ module.exports = yeoman.generators.Base.extend({
 																													'time-grunt',
 																													'angular',
 																													this.route.module,
-																													'bootstrap-sass',
 																													'grunt',
 																													'grunt-contrib-clean',
 																													'grunt-contrib-concat',
