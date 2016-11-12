@@ -67,7 +67,6 @@ module.exports = yeoman.generators.Base.extend({
 			// To access props later use this.props.someOption;
 			this.appName = this.props.name;
 			appName = prepareAppName(this.appName);
-			this.log(appName);
 			this.appDescription = this.props.description;
 			this.DBName = this.props.DBName;
 			this.DBPassword = this.props.DBPassword;
